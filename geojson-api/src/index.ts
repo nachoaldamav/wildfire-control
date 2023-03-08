@@ -165,14 +165,10 @@ function getFiles(file: string, id: string, c) {
     })
     .filter((file) => file.name.endsWith('.json'));
 
-  const geojsonFile = files.find((file) =>
-    file.name.includes('observedEventA')
-  );
+  let geojsonFile = files.find((file) => file.name.includes('observedEventA'));
 
   if (!geojsonFile) {
-    c.json({
-      error: 'No geojson file found',
-    });
+    geojsonFile = files.find((file) => file.name.includes('imageFootprintA'));
   }
 
   const content = JSON.parse(

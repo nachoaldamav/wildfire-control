@@ -9,53 +9,57 @@ export default async function getActivation(id: string) {
   const items = json.rss.channel[0].item as Root;
 
   return items
-    .map((item) => {
-      const coords = item['georss:polygon'][0].split(' ');
-      const pairs = [];
+    ? items
+        .map((item) => {
+          const coords = item['georss:polygon'][0].split(' ');
+          const pairs = [];
 
-      for (let i = 0; i < coords.length; i += 2) {
-        pairs.push([Number(coords[i + 1]), Number(coords[i])]);
-      }
+          for (let i = 0; i < coords.length; i += 2) {
+            pairs.push([Number(coords[i + 1]), Number(coords[i])]);
+          }
 
-      return {
-        title: item.title[0],
-        link: item.link[0],
-        description: item.description[0],
-        category: item.category[0],
-        guid: item.guid[0]._,
-        source: item.source[0]._,
-        internal_id: item['gdacs:cemsaoi'][0],
-        polygon: item['georss:polygon'][0],
-        geojson: {
-          type: 'Feature',
-          properties: {},
-          geometry: {
-            type: 'Polygon',
-            coordinates: [pairs],
-          },
-        },
-        pubDate: item.pubDate ? item.pubDate[0] : undefined,
-        'gdacs:thumbnail': item['gdacs:thumbnail']
-          ? item['gdacs:thumbnail'][0]
-          : undefined,
-        'gdacs:cemsptype': item['gdacs:cemsptype']
-          ? item['gdacs:cemsptype'][0]
-          : undefined,
-        'gdacs:cemsctype': item['gdacs:cemsctype']
-          ? item['gdacs:cemsctype'][0]
-          : undefined,
-        'gdacs:cemsmonit': item['gdacs:cemsmonit']
-          ? item['gdacs:cemsmonit'][0]
-          : undefined,
-      };
-    })
-    .sort((a, b) => {
-      if (a.pubDate && b.pubDate) {
-        return new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime();
-      }
+          return {
+            title: item.title[0],
+            link: item.link[0],
+            description: item.description[0],
+            category: item.category[0],
+            guid: item.guid[0]._,
+            source: item.source[0]._,
+            internal_id: item['gdacs:cemsaoi'][0],
+            polygon: item['georss:polygon'][0],
+            geojson: {
+              type: 'Feature',
+              properties: {},
+              geometry: {
+                type: 'Polygon',
+                coordinates: [pairs],
+              },
+            },
+            pubDate: item.pubDate ? item.pubDate[0] : undefined,
+            'gdacs:thumbnail': item['gdacs:thumbnail']
+              ? item['gdacs:thumbnail'][0]
+              : undefined,
+            'gdacs:cemsptype': item['gdacs:cemsptype']
+              ? item['gdacs:cemsptype'][0]
+              : undefined,
+            'gdacs:cemsctype': item['gdacs:cemsctype']
+              ? item['gdacs:cemsctype'][0]
+              : undefined,
+            'gdacs:cemsmonit': item['gdacs:cemsmonit']
+              ? item['gdacs:cemsmonit'][0]
+              : undefined,
+          };
+        })
+        .sort((a, b) => {
+          if (a.pubDate && b.pubDate) {
+            return (
+              new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime()
+            );
+          }
 
-      return 0;
-    });
+          return 0;
+        })
+    : [];
 }
 
 export type Root = Root2[];

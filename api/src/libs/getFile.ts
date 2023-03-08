@@ -1,5 +1,4 @@
 import { load } from 'cheerio';
-import AdmZip from 'adm-zip';
 
 export async function getFile(url: string) {
   const res = await fetch(url);
